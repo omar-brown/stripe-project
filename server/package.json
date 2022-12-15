@@ -4,7 +4,9 @@
   "description": "The back-end server for handling stripe API calls",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "start": "node lib/index.js",
+    "dev": "concurrently \"tsc -w\" \"nodemon lib/server.js\"",
   },
   "keywords": [
     "stripe",
