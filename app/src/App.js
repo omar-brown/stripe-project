@@ -11,37 +11,37 @@ function App() {
   return (
     <Router>
       <div>
-        <nav>
+        <nav class="navbar navbar-expand-lg bg-dark">
           <ul className="navbar-nav">
-            <li>
-              <Link to="/">Home</Link>
+            <li class="nav-item">
+              <Link class="nav-link" to="/">Home</Link>
             </li>
-            <li>
-              <Link to="/checkout">
+            <li class="nav-item">
+              <Link class="nav-link" to="/checkout">
                 <span aria-label="emoji" role="img">
                   🛒
                 </span>{' '}
                 Checkout
               </Link>
             </li>
-            <li>
-              <Link to="/payments">
+            <li class="nav-item">
+              <Link class="nav-link" to="/payments">
                 <span aria-label="emoji" role="img">
                   💸
                 </span>{' '}
                 Payments
               </Link>
             </li>
-            <li>
-              <Link to="/customers">
+            <li class="nav-item">
+              <Link class="nav-link" to="/customers">
                 <span aria-label="emoji" role="img">
                   🧑🏿‍🤝‍🧑🏻
                 </span>{' '}
                 Customers
               </Link>
             </li>
-            <li>
-              <Link to="/subscriptions">
+            <li class="nav-item">
+              <Link class="nav-link" to="/subscriptions">
                 <span aria-label="emoji" role="img">
                   🔄
                 </span>{' '}
