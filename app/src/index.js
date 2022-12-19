@@ -6,7 +6,7 @@ import App from './App';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 export const stripePromise = loadStripe(
-  'pk_test_4nOfTg0Oc6U0lpCTW7TwFJGk'
+  'pk_test_4nOfTg0Oc6U0lpCTW7TwFJGk' 
 )
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

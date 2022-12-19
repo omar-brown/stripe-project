@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useStripe } from "@stripe/react-stripe-js";
+import {fetchFromAPI} from './helpers'
 
 export function Checkout() {
     const stripe = useStripe();
@@ -14,6 +15,14 @@ export function Checkout() {
     const changeQuantity = (val) => setProduct(
         { ...product, quantity: Math.max(0, product.quantity + val) }
     )
+    const handleClick = async (event) => {
+        const body = { line_items: [product] }
+        const { id: sessionId } = await fetchFromAPI('checkouts', { body });
+        const { error } = await stripe.redirectToCheckout({ sessionId });
+        if (error) {
+            console.log(error);
+        }
+    }
     return (
         <>
             <div class="row">
@@ -23,9 +32,17 @@ export function Checkout() {
                         <div class="card-body">
                             <h3 class="card-title">{product.name}</h3>
                             <p class="card-text">Stripe Amount: {product.amount}</p>
-                            <a href="#" class="btn btn-primary">-</a>
-                            <span>{product.quantity}</span>
-                            <a href="#" class="btn btn-primary">+</a>
+                            <div class="container">
+                                <button class="btn btn-primary" onClick={() => changeQuantity(-1)}>-</button>
+                                <span>{product.quantity}</span>
+                                <button class="btn btn-primary" onClick={() => changeQuantity(1)}>+</button>
+                            </div>
+                            <button
+                                onClick={handleClick}
+                                disabled={product.quantity < 1}
+                                class="btn btn-primary">
+                                Start Checkout
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -37,14 +54,16 @@ export function Checkout() {
 export function CheckoutFail() {
     return (
         <>
-            <h1>Failed</h1>
+            <h1>Checkout Failed 😭</h1>
         </>
     )
 }
 export function CheckoutSuccess() {
+    const url = window.location.href;
+    const sessionId = new URL(url).searchParams.get('session_id')
     return (
         <>
-            <h1>Success</h1>
+            <h1>Success! {sessionId} </h1>
         </>
     )
 }
