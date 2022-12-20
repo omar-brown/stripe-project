@@ -6,9 +6,13 @@ import { Checkout, CheckoutSuccess, CheckoutFail } from './Checkout';
 import Payments from './Payments';
 import Customers from './Customers';
 import Subscriptions from './Subscriptions';
+import { auth } from './firebase';
+import { AuthProvider } from 'reactfire';
 
 function App() {
+  
   return (
+    <AuthProvider sdk={auth}>
     <Router>
       <div>
         <nav class="navbar navbar-expand-lg bg-dark">
@@ -64,6 +68,7 @@ function App() {
         </main>
       </div>
     </Router>
+    </AuthProvider>
   );
 }
 
