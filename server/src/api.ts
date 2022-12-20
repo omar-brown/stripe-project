@@ -1,18 +1,26 @@
 import express, { NextFunction, Request, Response } from 'express';
+import cors from 'cors';
+
 export const app = express();
 
-// Middleware
-app.use(express.json());
+////// Middleware //////
 
-import cors from 'cors';
+
+// Allows cross origin requests
 app.use(cors({ origin: true }));
 
+// sets rawBody for webhook handling
+app.use(express.json({
+    verify: (req, res, buffer) => (req['rawBody'] = buffer)
+})
+);
 
 /**
  * Handle api endpoint for checkout
  */
 import { createStripeCheckoutSession } from './checkout';
 import { createPaymentIntent } from './payments';
+import { handleStripeWebhook } from './webhooks';
 app.post(
     '/checkouts', runAsync(async ({ body }: Request, res: Response) => {
         res.send(
@@ -34,6 +42,12 @@ app.post(
         )
     })
 )
+
+/**
+ * Handle Webhooks
+ */
+app.post('/hooks', runAsync(handleStripeWebhook));
+
 /**
  * Catch async errors when awaiting promises
  * Express doesn't normally handle async errors, and will just cause the UI to hang
