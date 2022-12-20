@@ -25,29 +25,43 @@ export function Checkout() {
     }
     return (
         <>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="card">
-                        <img src={product.images[0]} alt="product" class="card-img-top" />
-                        <div class="card-body">
-                            <h3 class="card-title">{product.name}</h3>
-                            <p class="card-text">Stripe Amount: {product.amount}</p>
-                            <div class="container">
-                                <button class="btn btn-primary" onClick={() => changeQuantity(-1)}>-</button>
-                                <span>{product.quantity}</span>
-                                <button class="btn btn-primary" onClick={() => changeQuantity(1)}>+</button>
-                            </div>
-                            <button
-                                onClick={handleClick}
-                                disabled={product.quantity < 1}
-                                class="btn btn-primary">
-                                Start Checkout
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </>
+         <h2>Stripe Checkout</h2>
+      <p>
+        Shopping-cart scenario. Change the quantity
+        of the products below, then click checkout to open the Stripe Checkout
+        window.
+      </p>
+
+      <div className="product">
+        <h3>{product.name}</h3>
+        <h4>Stripe Amount: {product.amount}</h4>
+
+        <img src={product.images[0]} width="250px" alt="product" />
+
+        <button
+          className="btn btn-sm btn-warning"
+          onClick={() => changeQuantity(-1)}>
+          -
+        </button>
+        <span style={{ margin: '20px', fontSize: '2em' }}>
+          {product.quantity}
+        </span>
+        <button
+          className="btn btn-sm btn-success"
+          onClick={() => changeQuantity(1)}>
+          +
+        </button>
+      </div>
+
+      <hr />
+
+      <button
+        className="btn btn-primary"
+        onClick={handleClick}
+        disabled={product.quantity < 1}>
+        Start Checkout
+      </button>
+    </>
     )
 }
 
