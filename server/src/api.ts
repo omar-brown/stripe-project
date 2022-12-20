@@ -12,7 +12,7 @@ app.use(cors({ origin: true }));
  * Handle api endpoint for checkout
  */
 import { createStripeCheckoutSession } from './checkout';
-
+import { createPaymentIntent } from './payments';
 app.post(
     '/checkouts', runAsync(async ({ body }: Request, res: Response) => {
         res.send(
@@ -23,11 +23,22 @@ app.post(
 )
 
 /**
+ * Payment Intents API
+ */
+
+// Create a PaymentIntent
+app.post(
+    '/payments', runAsync(async ({ body }: Request, res: Response) => {
+        res.send(
+            await createPaymentIntent(body.amount)
+        )
+    })
+)
+/**
  * Catch async errors when awaiting promises
  * Express doesn't normally handle async errors, and will just cause the UI to hang
  * This function will help handle errors more gracefully
  */
-
 function runAsync(callback: Function) {
     console.log(callback)
     return (req: Request, res: Response, next: NextFunction) => {
