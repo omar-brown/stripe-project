@@ -1,10 +1,13 @@
 import express, { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
+import { createStripeCheckoutSession } from './checkout';
+import { createPaymentIntent } from './payments';
+import { handleStripeWebhook } from './webhooks';
+import { auth } from './firebase';
 
 export const app = express();
 
 ////// Middleware //////
-
 
 // Allows cross origin requests
 app.use(cors({ origin: true }));
@@ -15,12 +18,14 @@ app.use(express.json({
 })
 );
 
+// Decodes the Firebase JSON Web Token
+app.use(decodeJWT)
+
+
 /**
  * Handle api endpoint for checkout
  */
-import { createStripeCheckoutSession } from './checkout';
-import { createPaymentIntent } from './payments';
-import { handleStripeWebhook } from './webhooks';
+
 app.post(
     '/checkouts', runAsync(async ({ body }: Request, res: Response) => {
         res.send(
@@ -47,6 +52,39 @@ app.post(
  * Handle Webhooks
  */
 app.post('/hooks', runAsync(handleStripeWebhook));
+
+/**
+ * Decodes the JSON Web Token sent via the frontend app
+ * Makes the currentUser (firebase) data available on the body
+ */
+async function decodeJWT(req: Request, res: Response, next: NextFunction) {
+    // Look to see if the headers: Auth starts with bearer
+    if (req.headers?.authorization?.startsWith('Bearer')) {
+        // Split the token off the string
+        const idToken = req.headers?.authorization?.startsWith('Bearer')[1];
+        try {
+
+            const decodedToken = await auth.verifyIdToken(idToken);
+            // Add the user to the request
+            req['currentUser'] = decodedToken;
+        } catch (err) {
+            console.error(`Auth Error: ${err}`)
+        }
+    }
+    // Call next() so express knows to move on to the next step in the process
+    next();
+}
+
+/**
+ * Throws an error if the currentUser does not exist on the Request
+ */
+function validateUser(req: Request){
+    const user = req['currentUser'];
+    if (!user){
+        throw new Error('You must be logged in to make this request.')
+    }
+    return user;
+}
 
 /**
  * Catch async errors when awaiting promises
