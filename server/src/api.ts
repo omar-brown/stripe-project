@@ -5,6 +5,7 @@ import { createPaymentIntent } from './payments';
 import { handleStripeWebhook } from './webhooks';
 import { auth } from './firebase';
 import { createSetupIntent, listPaymentMethodes as listPaymentMethods } from './customers';
+import { createSubscription, listSubscriptions } from './billing';
 
 export const app = express();
 
@@ -104,6 +105,25 @@ function validateUser(req: Request) {
     }
     return user;
 }
+
+/**
+ * Billing and Recurring Subscriptions
+ */
+
+// Create and charge new subscription
+app.post('/subscriptions/', runAsync(async (req: Request, res: Response) => {
+    const user = validateUser(req);
+    const { plan, payment_method } = req.body;
+    const subscription = createSubscription(user.uid, plan, payment_method);
+    res.send(subscription);
+}))
+
+// Get all subscriptions for a customer
+app.get('/subscriptions/', runAsync(async (req: Request, res: Response) => {
+    const user = validateUser(req);
+    const subscriptions = await listSubscriptions(user.uid);
+    res.send(subscriptions.data)
+}))
 
 /**
  * Catch async errors when awaiting promises
