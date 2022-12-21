@@ -52,20 +52,23 @@ export function Customers() {
     const [setupIntent, setSetupIntent] = useState();
     const [wallet, setWallet] = useState([]);
 
+    useEffect(() => {
+        getWallet()
+    }, [user]);
 
     const getWallet = async () => {
         const paymentMethods = await fetchFromAPI('wallet', { method: 'GET' });
+        console.log('called!')
         setWallet(paymentMethods);
     }
-    if(user){
-        getWallet();
-    }
-
+    
     const createSetupIntent = async() => {
+        console.log('createSetup ran')
         const si = await fetchFromAPI('wallet');
         setSetupIntent(si);
     }
     const handleSubmit = async(event) => {
+        console.log('Submit ran')
         event.preventDefault();
         const cardEl = elements.getElement(CardElement);
         const {
