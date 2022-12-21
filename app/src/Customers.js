@@ -34,13 +34,7 @@ function SignOut(props) {
         </>
     )
 }
-function SaveCard(props) {
-    return (
-        <>
 
-        </>
-    )
-}
 function CreditCard(props) {
     const { last4, brand, exp_month, exp_year } = props.card;
     return (
@@ -52,20 +46,21 @@ function CreditCard(props) {
 
 export function Customers() {
     const stripe = useStripe();
+    const { status, data: signInCheckResult } = useSigninCheck();
+    const user = useUser();
     const elements = useElements();
     const [setupIntent, setSetupIntent] = useState();
     const [wallet, setWallet] = useState([]);
-    const { status, data: signInCheckResult } = useSigninCheck();
-    const user = useUser();
- 
-    useEffect(() => {
-        getWallet();
-    }, [user])
+
 
     const getWallet = async () => {
         const paymentMethods = await fetchFromAPI('wallet', { method: 'GET' });
         setWallet(paymentMethods);
     }
+    if(user){
+        getWallet();
+    }
+
     const createSetupIntent = async() => {
         const si = await fetchFromAPI('wallet');
         setSetupIntent(si);
