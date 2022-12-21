@@ -4,6 +4,7 @@ import { createStripeCheckoutSession } from './checkout';
 import { createPaymentIntent } from './payments';
 import { handleStripeWebhook } from './webhooks';
 import { auth } from './firebase';
+import { createSetupIntent, listPaymentMethodes as listPaymentMethods } from './customers';
 
 export const app = express();
 
@@ -51,6 +52,7 @@ app.post(
 /**
  * Handle Webhooks
  */
+
 app.post('/hooks', runAsync(handleStripeWebhook));
 
 /**
@@ -60,10 +62,9 @@ app.post('/hooks', runAsync(handleStripeWebhook));
 async function decodeJWT(req: Request, res: Response, next: NextFunction) {
     // Look to see if the headers: Auth starts with bearer
     if (req.headers?.authorization?.startsWith('Bearer')) {
-        // Split the token off the string
-        const idToken = req.headers?.authorization?.startsWith('Bearer')[1];
+        // Split the token off the string    
+        const idToken = req.headers?.authorization?.split('Bearer ')[1];
         try {
-
             const decodedToken = await auth.verifyIdToken(idToken);
             // Add the user to the request
             req['currentUser'] = decodedToken;
@@ -76,11 +77,29 @@ async function decodeJWT(req: Request, res: Response, next: NextFunction) {
 }
 
 /**
+ * Customer and Setup Intents
+ */
+
+// Save a card on the customer record with a SetupIntent
+app.post('/wallet', runAsync(async (req: Request, res: Response) => {
+    const user = validateUser(req);
+    const setupIntent = await createSetupIntent(user.uid);
+    res.send(setupIntent);
+}))
+
+// Retrieve all cards attached to the customer
+app.get('/wallet', runAsync(async (req: Request, res: Response) => {
+    const user = validateUser(req);
+    const wallet = await listPaymentMethods(user.uid);
+    res.send(wallet.data);
+}))
+
+/**
  * Throws an error if the currentUser does not exist on the Request
  */
-function validateUser(req: Request){
+function validateUser(req: Request) {
     const user = req['currentUser'];
-    if (!user){
+    if (!user) {
         throw new Error('You must be logged in to make this request.')
     }
     return user;
