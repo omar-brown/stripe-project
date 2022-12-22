@@ -91,13 +91,13 @@ function SubscribeToPlan(props) {
                 const { error: confirmationError } = await stripe.confirmCardPayment(
                     client_secret
                 )
-            
-            if (confirmationError) {
-                console.error(confirmationError);
-                alert('unable to confirm card')
-                return;
+
+                if (confirmationError) {
+                    console.error(confirmationError);
+                    alert('unable to confirm card')
+                    return;
+                }
             }
-        }
             // Success
             alert('You are subscribed!')
             getSubscriptions()
@@ -110,41 +110,65 @@ function SubscribeToPlan(props) {
         return <span>loading...</span>
     }
     if (signInCheckResult.signedIn === true) {
-
+        const monthlyPriceId = 'price_1MHXKhEeZnAv92igv1WJRlHI';
+        const quarterlyPriceId = 'price_1MHXP8EeZnAv92igZyEHYiYC';
         return (
             <>
-                {subscriptions.map(sub => (
-                    <div key={sub.id}>
-                        {sub.id}. Next payment of {sub.items.data[0].price.unit_amount} due {' '}
-                        {new Date(sub.current_period_end * 1000).toUTCString()}
-                        <button
-                            onClick={() => cancel(sub.id)}
-                            disabled={loading}>
-                            Cancel
-                        </button>
-                    </div>
-                ))}
+
                 <hr />
-                <div>
-                    <button onClick={() => setPriceId('price_1MHXKhEeZnAv92igv1WJRlHI')}>
+                <div className='well'>
+                    <h3>Step 1: Choose a Plan</h3>
+                    <button
+                        className={'btn ' + (priceId === monthlyPriceId ? 'btn-primary' : 'btn-outline-primary')}
+                        onClick={() => setPriceId(monthlyPriceId)}>
                         Choose Monthly $30/m
                     </button>
-                    <button onClick={() => setPriceId('price_1MHXP8EeZnAv92igZyEHYiYC')}>
+                    <button
+                        className={'btn ' + (priceId === quarterlyPriceId ? 'btn-primary' : 'btn-outline-primary')}
+                        onClick={() => setPriceId(quarterlyPriceId)}>
                         Choose Quarterly $60/q
                     </button>
                     <p>
                         Selected Plan: <strong>{priceId}</strong>
                     </p>
                 </div>
-                <form onSubmit={handleSubmit} hidden={!priceId}>
-                    <CardElement />
-                    <button
-                        type="submit"
-                        disabled={loading}>
-                        Subscribe & Pay
-                    </button>
-                </form>
-                <div>
+                <div className='well'>
+                    <h3>Step 2: Submit a Payment Method</h3>
+                    <p>Collect credit card details</p>
+                    <p>
+                        Normal Card: <code>4242424242424242</code>
+                    </p>
+                    <p>
+                        3D Secure Card: <code>4000002500003155</code>
+                    </p>
+                    <form onSubmit={handleSubmit} hidden={!priceId}>
+                        <CardElement />
+                        <button
+                            className='btn btn-success'
+                            type="submit"
+                            disabled={loading}>
+                            Subscribe & Pay
+                        </button>
+                    </form>
+                </div>
+                <div className='well'>
+                    <h3>Manage Current Subscriptions</h3>
+                    <div>
+                        {subscriptions.map(sub => (
+                            <div key={sub.id}>
+                                {sub.id}. Next payment of {sub.items.data[0].price.unit_amount} due {' '}
+                                {new Date(sub.current_period_end * 1000).toUTCString()}
+                                <button
+                                    className="btn btn-sm btn-danger"
+                                    onClick={() => cancel(sub.id)}
+                                    disabled={loading}>
+                                    Cancel
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <div className='well'>
                     <SignOut uid={signInCheckResult.user.uid} />
                 </div>
 
@@ -158,24 +182,23 @@ function SubscribeToPlan(props) {
 
 export default function Subscriptions() {
     const { status, data: signInCheckResult } = useSigninCheck();
-    if(status === 'loading' || undefined){
-        return(<p>loading...</p>)
+    if (status === 'loading' || undefined) {
+        return (<p>loading...</p>)
     }
-    if(signInCheckResult.signedIn === true){
+    if (signInCheckResult.signedIn === true) {
         return (
-            // <Suspense fallback={'loading user'}>
+            <Suspense fallback={'loading user'}>
             <>
-            <h2>Subscriptions</h2>
-            <p>Subscribe a user to a recurring plan, process the payment, and sync with Firestore</p>
-            <div className='well'>
-                <h2>Firestore Data</h2>
-                <p>User's Data in Firestore.</p>
-                {signInCheckResult.user.uid && <UserData user={signInCheckResult.user}/>}
-            </div>
-            <SubscribeToPlan />
-            
+                <h2>Subscriptions</h2>
+                <p>Subscribe a user to a recurring plan, process the payment, and sync with Firestore</p>
+                <div className='well'>
+                    <h2>Firestore Data</h2>
+                    <p>User's Data in Firestore.</p>
+                    {signInCheckResult.user.uid && <UserData user={signInCheckResult.user} />}
+                </div>
+                <SubscribeToPlan />
             </>
-            // </Suspense>
-    )
-}
+            </Suspense>
+        )
+    }
 }

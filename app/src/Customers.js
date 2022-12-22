@@ -21,14 +21,14 @@ export function SignIn() {
             })
     }
     return (
-        <button onClick={signIn}>Sign in with Google</button>
+        <button className='btn btn-primary' onClick={signIn}>Sign in with Google</button>
     )
 }
 export function SignOut(props) {
     return (
         <>
             <p>{props.uid}</p>
-            <button onClick={() => auth.signOut()}>
+            <button className='btn btn-outline-secondary' onClick={() => auth.signOut()}>
                 Sign Out User
             </button>
         </>
@@ -60,13 +60,13 @@ export function Customers() {
         const paymentMethods = await fetchFromAPI('wallet', { method: 'GET' });
         setWallet(paymentMethods);
     }
-    
-    const createSetupIntent = async() => {
+
+    const createSetupIntent = async () => {
         console.log('createSetup ran')
         const si = await fetchFromAPI('wallet');
         setSetupIntent(si);
     }
-    const handleSubmit = async(event) => {
+    const handleSubmit = async (event) => {
         console.log('Submit ran')
         event.preventDefault();
         const cardEl = elements.getElement(CardElement);
@@ -74,9 +74,9 @@ export function Customers() {
             setupIntent: updatedSetupIntent,
             error,
         } = await stripe.confirmCardSetup(setupIntent.client_secret, {
-            payment_method: {card: cardEl}
+            payment_method: { card: cardEl }
         });
-        if(error){
+        if (error) {
             alert(error.message);
             console.error(error);
         } else {
@@ -92,26 +92,35 @@ export function Customers() {
 
         return (
             <>
+                <h2>Customers</h2>
+                <p>
+                    Save credit card details for future use.
+                    Connect a Stripe Customer Id to a Firebase user id
+                </p>
+
                 <div class="well">
                     <h2>Create a Setup Intent</h2>
                     <button onClick={createSetupIntent}
-                     class="btn btn-success"
-                     hidden={setupIntent}>Attach A New Credit Card</button>
+                        class="btn btn-success"
+                        hidden={setupIntent}>Attach A New Credit Card</button>
                 </div>
                 <hr />
-                <form onSubmit={handleSubmit}>
-                    <CardElement />
-                    <button type="submit">Attach</button>
-                </form>
-
+                <div className='well'>
+                    <form onSubmit={handleSubmit}>
+                        <CardElement />
+                        <button className='btn btn-success btn-sm'type="submit">Attach</button>
+                    </form>
+                </div>
                 <div class="well">
                     <h2>Retrieve all Payment Sources</h2>
                     <select className='form-control'>
-                      {wallet.map(src => (<CreditCard key={src.id} card={src.card} />))}
+                        {wallet.map(src => (<CreditCard key={src.id} card={src.card} />))}
                     </select>
                 </div>
                 <hr />
+                <div className='well'>
                 <SignOut uid={signInCheckResult.user.uid} />
+                </div>
             </>
         )
     } else {

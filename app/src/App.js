@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-
+import logo from './github-mark.svg';
 import { Checkout, CheckoutSuccess, CheckoutFail } from './Checkout';
 import Payments from './Payments';
 import {Customers} from './Customers';
@@ -15,7 +15,7 @@ function App() {
     <AuthProvider sdk={auth}>
     <Router>
       <div>
-        <nav className="navbar navbar-expand-lg bg-dark">
+        <nav>
           <ul className="navbar-nav">
             <li className="nav-item">
               <Link className="nav-link" to="/">Home</Link>
@@ -76,6 +76,17 @@ export function Home() {
   return (
     <>
       <h2>Stripe React + Node.js</h2>
+      <div className='well'>
+        <h3>Running in Test Mode</h3>
+        <p>
+          This demo is running in Stripe test mode, so feel free to submit payments with
+          testing cards
+        </p>
+        <a className='logo' href="https://github.com/optimaldev/stripe-project">
+          <img  src={logo}></img>
+        </a>
+
+      </div>
     </>
   );
 }

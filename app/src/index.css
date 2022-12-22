@@ -1,7 +1,7 @@
-root {
+:root {
   --bg:  #242526;
   --bg-accent: #484a4d;
-  --text-color: #dadce1;
+  --text-color: #c3c7cf;
   --nav-size: 60px;
   --border: 1px solid #474a4d;
   --border-radius: 8px;
@@ -91,4 +91,13 @@ nav {
 .vid {
   max-width: 728px;
   margin: 10px auto;
+}
+
+.logo {
+  display: inline-block;
+  width: 2rem;
+}
+
+.logo img {
+  width: 100%;
 }
