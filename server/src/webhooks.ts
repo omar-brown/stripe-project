@@ -18,9 +18,9 @@ const webhookHandlers = {
         const customer = await stripe.customers.retrieve(data.customer as string) as Stripe.Customer;
         const userId = customer.metadata.firebaseUID;
         const userRef = db.collection('users').doc(userId);
-        const planIds = data.items.data.map(el => el.id)
+        const priceIds = data.items.data.map(el => el.id);
         await userRef.update({
-            activePlans: firestore.FieldValue.arrayUnion(planIds)
+            activePlans: firestore.FieldValue.arrayUnion(priceIds)
         })
 
     },
