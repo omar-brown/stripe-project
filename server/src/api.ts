@@ -5,7 +5,7 @@ import { createPaymentIntent } from './payments';
 import { handleStripeWebhook } from './webhooks';
 import { auth } from './firebase';
 import { createSetupIntent, listPaymentMethodes as listPaymentMethods } from './customers';
-import { createSubscription, listSubscriptions } from './billing';
+import { cancelSubscription, createSubscription, listSubscriptions } from './billing';
 
 export const app = express();
 
@@ -125,13 +125,18 @@ app.get('/subscriptions/', runAsync(async (req: Request, res: Response) => {
     res.send(subscriptions.data)
 }))
 
+// Unsubscribe or cancel a subscription
+app.patch('/subscriptions/:id', runAsync(async (req: Request, res: Response) => {
+    const user = validateUser(req);
+    res.send(await cancelSubscription(user.uid, req.params.id));
+}))
+
 /**
  * Catch async errors when awaiting promises
  * Express doesn't normally handle async errors, and will just cause the UI to hang
  * This function will help handle errors more gracefully
  */
 function runAsync(callback: Function) {
-    console.log(callback)
     return (req: Request, res: Response, next: NextFunction) => {
         callback(req, res, next).catch(next)
     }
