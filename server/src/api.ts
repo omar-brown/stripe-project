@@ -113,8 +113,8 @@ function validateUser(req: Request) {
 // Create and charge new subscription
 app.post('/subscriptions/', runAsync(async (req: Request, res: Response) => {
     const user = validateUser(req);
-    const { plan, payment_method } = req.body;
-    const subscription = createSubscription(user.uid, plan, payment_method);
+    const { priceId, payment_method } = req.body;
+    const subscription = await createSubscription(user.uid, priceId, payment_method);
     res.send(subscription);
 }))
 

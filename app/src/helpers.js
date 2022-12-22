@@ -9,9 +9,10 @@ const API = 'http://localhost:3333';
 export async function fetchFromAPI(endpointURL, opts) {
     // Set defaults, then overwrite with any options passed in using destructuring
     const { method, body } = { method: 'POST', body: null, ...opts }
-
+    
     // Authentication
     const user = auth.currentUser;
+
     const token = user && (await user.getIdToken());
 
     const res = await fetch(`${API}/${endpointURL}`, {

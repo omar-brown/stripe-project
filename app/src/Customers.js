@@ -6,7 +6,7 @@ import { fetchFromAPI } from './helpers';
 import { useEffect, useState } from 'react';
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
 
-function SignIn() {
+export function SignIn() {
     const provider = new GoogleAuthProvider();
     const signIn = async () => {
         signInWithPopup(auth, provider)
@@ -24,7 +24,7 @@ function SignIn() {
         <button onClick={signIn}>Sign in with Google</button>
     )
 }
-function SignOut(props) {
+export function SignOut(props) {
     return (
         <>
             <p>{props.uid}</p>
@@ -58,7 +58,6 @@ export function Customers() {
 
     const getWallet = async () => {
         const paymentMethods = await fetchFromAPI('wallet', { method: 'GET' });
-        console.log('called!')
         setWallet(paymentMethods);
     }
     

@@ -73,15 +73,16 @@ export async function cancelSubscription(userId: string, subscriptionId: string)
     // const subscription = await stripe.subscriptions.update(subscriptionId, {cancel_at_period_end: true});
     // Set up webhook to listen to event when it is deleted
 
-    const priceIds = subscription.items.data.map((el) => el.id);
+    const priceIds = subscription.items.data.map((el) => el.price.id);
     if(subscription.status === 'canceled'){
         await db
         .collection('users')
         .doc(userId)
         .update({
-            activePlans: firestore.FieldValue.arrayRemove(priceIds)
+            activePlans: firestore.FieldValue.arrayRemove(...priceIds)
         })
     }
+    return subscription;
 }
 
 /**
