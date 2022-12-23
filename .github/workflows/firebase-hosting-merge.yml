@@ -14,7 +14,6 @@ jobs:
       - name: Build React App
       - working-directory: ./app/
       - run: npm ci && npm run build
-      - name: Deploy to Firebase
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
