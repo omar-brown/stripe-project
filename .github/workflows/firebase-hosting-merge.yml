@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Build React App
       - working-directory: ./app/
       - run: npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
