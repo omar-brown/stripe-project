@@ -43,10 +43,8 @@ function SubscribeToPlan(props) {
 
     // Fetch current subscriptions from the API
     const getSubscriptions = async () => {
-        if (user) {
-            const subs = await fetchFromAPI('subscriptions', { method: 'GET' });
-            setSubscriptions(subs);
-        }
+        const subs = await fetchFromAPI('subscriptions', { method: 'GET' });
+        setSubscriptions(subs);
     }
 
     // Cancel a subscription
@@ -188,16 +186,16 @@ export default function Subscriptions() {
     if (signInCheckResult.signedIn === true) {
         return (
             <Suspense fallback={'loading user'}>
-            <>
-                <h2>Subscriptions</h2>
-                <p>Subscribe a user to a recurring plan, process the payment, and sync with Firestore</p>
-                <div className='well'>
-                    <h2>Firestore Data</h2>
-                    <p>User's Data in Firestore.</p>
-                    {signInCheckResult.user.uid && <UserData user={signInCheckResult.user} />}
-                </div>
-                <SubscribeToPlan />
-            </>
+                <>
+                    <h2>Subscriptions</h2>
+                    <p>Subscribe a user to a recurring plan, process the payment, and sync with Firestore</p>
+                    <div className='well'>
+                        <h2>Firestore Data</h2>
+                        <p>User's Data in Firestore.</p>
+                        {signInCheckResult.user.uid && <UserData user={signInCheckResult.user} />}
+                    </div>
+                    <SubscribeToPlan />
+                </>
             </Suspense>
         )
     }

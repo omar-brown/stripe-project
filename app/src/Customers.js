@@ -11,7 +11,7 @@ export function SignIn() {
     const signIn = async () => {
         signInWithPopup(auth, provider)
             .then((res) => {
-                const credential = GoogleAuthProvider.credentialFromResult(res);
+                GoogleAuthProvider.credentialFromResult(res);
                 const { uid, email } = res.user;
                 setDoc(doc(db, "users", uid), {
                     email
@@ -62,12 +62,10 @@ export function Customers() {
     }
 
     const createSetupIntent = async () => {
-        console.log('createSetup ran')
         const si = await fetchFromAPI('wallet');
         setSetupIntent(si);
     }
     const handleSubmit = async (event) => {
-        console.log('Submit ran')
         event.preventDefault();
         const cardEl = elements.getElement(CardElement);
         const {
@@ -111,7 +109,7 @@ export function Customers() {
                         <button className='btn btn-success btn-sm'type="submit">Attach</button>
                     </form>
                 </div>
-                <div class="well">
+                <div className="well">
                     <h2>Retrieve all Payment Sources</h2>
                     <select className='form-control'>
                         {wallet.map(src => (<CreditCard key={src.id} card={src.card} />))}

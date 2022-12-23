@@ -83,7 +83,7 @@ export function Home() {
           testing cards
         </p>
         <a className='logo' href="https://github.com/optimaldev/stripe-project">
-          <img  src={logo}></img>
+          <img src={logo} alt="github-logo"></img>
         </a>
 
       </div>
