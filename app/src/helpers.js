@@ -1,6 +1,6 @@
 import { auth } from "./firebase";
 
-const API = 'http://localhost:3333';
+const API = 'https://server-sucaufqy2a-uc.a.run.app'
 
 /**
  * Function to fetch data from your API
